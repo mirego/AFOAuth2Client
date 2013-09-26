@@ -103,6 +103,7 @@ static NSMutableDictionary * AFKeychainQueryDictionaryWithIdentifier(NSString *i
                               username:(NSString *)username
                               password:(NSString *)password
                                  scope:(NSString *)scope
+                       clearAuthHeader:(BOOL)clear
                                success:(void (^)(AFOAuthCredential *credential))success
                                failure:(void (^)(NSError *error))failure
 {
@@ -113,11 +114,12 @@ static NSMutableDictionary * AFKeychainQueryDictionaryWithIdentifier(NSString *i
     [mutableParameters setValue:scope forKey:@"scope"];
     NSDictionary *parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
 
-    [self authenticateUsingOAuthWithPath:path parameters:parameters success:success failure:failure];
+    [self authenticateUsingOAuthWithPath:path parameters:parameters clearAuthHeader:clear success:success failure:failure];
 }
 
 - (void)authenticateUsingOAuthWithPath:(NSString *)path
                                  scope:(NSString *)scope
+                       clearAuthHeader:(BOOL)clear
                                success:(void (^)(AFOAuthCredential *credential))success
                                failure:(void (^)(NSError *error))failure
 {
@@ -126,11 +128,12 @@ static NSMutableDictionary * AFKeychainQueryDictionaryWithIdentifier(NSString *i
     [mutableParameters setValue:scope forKey:@"scope"];
     NSDictionary *parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
 
-    [self authenticateUsingOAuthWithPath:path parameters:parameters success:success failure:failure];
+    [self authenticateUsingOAuthWithPath:path parameters:parameters clearAuthHeader:clear success:success failure:failure];
 }
 
 - (void)authenticateUsingOAuthWithPath:(NSString *)path
                           refreshToken:(NSString *)refreshToken
+                       clearAuthHeader:(BOOL)clear
                                success:(void (^)(AFOAuthCredential *credential))success
                                failure:(void (^)(NSError *error))failure
 {
@@ -139,12 +142,13 @@ static NSMutableDictionary * AFKeychainQueryDictionaryWithIdentifier(NSString *i
     [mutableParameters setValue:refreshToken forKey:@"refresh_token"];
     NSDictionary *parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
 
-    [self authenticateUsingOAuthWithPath:path parameters:parameters success:success failure:failure];
+    [self authenticateUsingOAuthWithPath:path parameters:parameters clearAuthHeader:clear success:success failure:failure];
 }
 
 - (void)authenticateUsingOAuthWithPath:(NSString *)path
                                   code:(NSString *)code
                            redirectURI:(NSString *)uri
+                       clearAuthHeader:(BOOL)clear
                                success:(void (^)(AFOAuthCredential *credential))success
                                failure:(void (^)(NSError *error))failure
 {
@@ -154,11 +158,12 @@ static NSMutableDictionary * AFKeychainQueryDictionaryWithIdentifier(NSString *i
     [mutableParameters setValue:uri forKey:@"redirect_uri"];
     NSDictionary *parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
 
-    [self authenticateUsingOAuthWithPath:path parameters:parameters success:success failure:failure];
+    [self authenticateUsingOAuthWithPath:path parameters:parameters clearAuthHeader:clear success:success failure:failure];
 }
 
 - (void)authenticateUsingOAuthWithPath:(NSString *)path
                             parameters:(NSDictionary *)parameters
+                       clearAuthHeader:(BOOL)clear
                                success:(void (^)(AFOAuthCredential *credential))success
                                failure:(void (^)(NSError *error))failure
 {
@@ -167,7 +172,9 @@ static NSMutableDictionary * AFKeychainQueryDictionaryWithIdentifier(NSString *i
     [mutableParameters setValue:self.secret forKey:@"client_secret"];
     parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
 
-    [self clearAuthorizationHeader];
+    if (clearAuthHeader) {
+        [self clearAuthorizationHeader];
+    }
 
     NSMutableURLRequest *mutableRequest = [self requestWithMethod:@"POST" path:path parameters:parameters];
     [mutableRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
