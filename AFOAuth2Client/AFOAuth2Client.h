@@ -164,7 +164,7 @@
  */
 - (void)authenticateUsingOAuthWithPath:(NSString *)path
                             parameters:(NSDictionary *)parameters
-                       clearAuthHeader:(BOOL)clear
+                       clearAuthHeader:(BOOL)clearAuthHeader
                                success:(void (^)(AFOAuthCredential *credential))success
                                failure:(void (^)(NSError *error))failure;
 
